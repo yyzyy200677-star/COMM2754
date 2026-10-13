@@ -1,33 +1,42 @@
+let beat;
+let analyzer;
+
+function preload() {
+  beat = loadSound('beat.mp3');
+}
+
 function setup() {
-  textOutput();
-  createCanvas(720, 400);
-  angleMode(DEGREES);
+  let myCanvas = createCanvas(600, 400);
+  myCanvas.parent('myContainer');
+
+  analyzer = new p5.Amplitude();
+  analyzer.setInput(beat);
+}
+
+function mousePressed() {
+  if (beat.isPlaying()) {
+    beat.stop();
+  } else {
+    beat.loop();
+  }
 }
 
 function draw() {
-  background(200, 230, 255);
+  background(230);
 
-  fill(255, 180, 200);
-  square(30, 30, 130);
+  let rms = 0;
 
-  fill(255, 235, 160);
-  rect(100, 40, 200, 100);
+  if (analyzer.getLevel()) {
+    rms = analyzer.getLevel();
+  }
 
-  fill(255);
-  ellipse(540, 100, 300, 100);
-
-  fill(120, 80, 180);
-  circle(mouseX, mouseY, 100);
-
-  fill(180, 240, 190);
-  arc(540, 100, 300, 100, 180, 360, CHORD);
-
+  fill(127);
   stroke(0);
-  line(20, 200, 200, 350);
 
-  fill(255, 180, 80);
-  triangle(250, 350, 350, 200, 450, 350);
-
-  fill(130, 220, 170);
-  quad(500, 250, 550, 200, 700, 300, 650, 350);
+  ellipse(
+    width / 2,
+    height / 2,
+    10 + rms * 200,
+    10 + rms * 200
+  );
 }
